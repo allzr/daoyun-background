@@ -15,7 +15,7 @@
                     </el-input>
                 </el-col>
                 <el-col :span="4">
-                    <el-button type="primary">添加用户</el-button>
+                    <el-button class="adduser" type="primary">添加用户</el-button>
                 </el-col>
             </el-row>
             <el-table :data="tableData  " border stripe>
@@ -37,7 +37,7 @@
             </el-table>
             <!-- 分页-->
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" 
-            :current-page="quertInof.pagenum" :page-sizes="[52,100,200]" :page-size="quertInof.pagesize" 
+            :current-page="quertInof.pagenum" :page-sizes="[50,100,200]" :page-size="quertInof.pagesize" 
             layout="total, sizes, prev, pager, next, jumper" :total="total">
             </el-pagination>
         </el-card>
@@ -152,5 +152,8 @@ export default({
 })
 </script>
 <style lang="less" scoped>
-
+    .adduser{
+        position: absolute;
+        right: 20px;
+    }
 </style>
