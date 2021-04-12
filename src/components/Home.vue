@@ -6,7 +6,17 @@
           <img src="../assets/cloud2.jpg" alt="">
           <span>DAO云</span>
       </div>
-      <i class="el-icon-user-solid" style="font-size:10px">个人中心</i>
+      <i class="el-icon-user-solid" style="font-size:10px">
+        <el-dropdown :hide-on-click="false">
+  <span class="el-dropdown-link">
+    个人中心<i class="el-icon-arrow-down el-icon--right"></i>
+  </span>
+  <el-dropdown-menu slot="dropdown">
+    <el-dropdown-item @click.native = "gotoChangePwd">修改密码</el-dropdown-item>
+    <el-dropdown-item @click.native = "gotoLogin">退出登入</el-dropdown-item>
+  </el-dropdown-menu>
+</el-dropdown>
+      </i>
   </el-header>
   <el-container>
     <!-- 侧边栏-->
@@ -48,6 +58,8 @@
 </el-container>
 </template>
 <script>
+//import Vue from "vue";
+
 //import axios from 'axios'
 export default ({
   data(){
@@ -102,6 +114,12 @@ export default ({
   methods:{
     SaveNavState(activePath){
     window.sessionStorage.setItem('activePath',activePath);
+  },
+  gotoChangePwd(){
+      this.$router.push('/changePassword');
+  },
+  gotoLogin(){
+    this.$router.push('/Login');
   }
   }
 })
@@ -135,4 +153,11 @@ export default ({
 .el-main{
     background-color: #EAEDF1;
 }
+ .el-dropdown-link {
+    cursor: pointer;
+    color: #fff;
+  }
+  .el-icon-arrow-down {
+    font-size: 12px;
+  }
 </style>

@@ -3,7 +3,7 @@
         <!-- 面包屑导航-->
         <el-breadcrumb separator=">">
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>课程管理</el-breadcrumb-item>
+            <el-breadcrumb-item>角色管理</el-breadcrumb-item>
         </el-breadcrumb>
         <!-- 卡片视图-->
         <el-card>

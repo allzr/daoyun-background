@@ -9,6 +9,7 @@ import MenuMa from '../components/users/MenuMa.vue'
 import ParameterM from '../components/users/ParameterM.vue'
 import RoleM from '../components/users/RoleM.vue'
 import forgetPassword from '../components/forgetPassword.vue'
+import changePassword from '../components/changePassword.vue'
 Vue.use(VueRouter)
 
 export default  new VueRouter({
@@ -22,11 +23,12 @@ export default  new VueRouter({
       {path:'/ClassM', component:ClassM},
       {path:'/MenuM' , component:MenuMa},
       {path:'/ParameterM' ,component:ParameterM},
-      {path:'/RoleM', component:RoleM}
+      {path:'/RoleM', component:RoleM},
     ]
     },
+    {path:'/forgetPassword' ,component:forgetPassword},
+    {path :'/changePassword',component:changePassword},
     {path:'/',redirect:'/login'},
-    {path:'/forgetPassword' ,component:forgetPassword}
  ]
 })
 
