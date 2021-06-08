@@ -10,7 +10,7 @@
             <!-- 搜索 -->
             <el-row :gutter="20">
                 <el-col :span="6"> 
-                    <el-input placeholder="搜索">
+                    <el-input v-model="searchClass" placeholder="搜索">
                         <el-button slot="append" icon="el-icon-search"></el-button>
                     </el-input>
                 </el-col>
@@ -103,7 +103,8 @@ export default({
                 tel:[{required:true,message:'请输入课程号',trigger:'blur'},
                 {min: 6, max: 6, message: '请输入6位课程号', trigger: 'blur'}
                 ]
-            }
+            },
+            searchClass:''
         }
     },
     created() {

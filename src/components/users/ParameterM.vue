@@ -10,24 +10,24 @@
             <!-- 搜索 -->
             <el-row>
                 <el-col :span="6"> 
-                    <span>菜单管理</span>
+                    <span>参数管理</span>
                 </el-col>
                 <el-col :span="4">
-                    <el-button class="adduser" type="primary">添加参数</el-button>
+                    <el-button class="adduser" type="primary" @click="addEditDialog()">添加参数</el-button>
                 </el-col>
             </el-row>
             <el-table :data="tableData  " border stripe>
                 <el-table-column type="index"></el-table-column>
-                <el-table-column label="参数名" prop="name"></el-table-column>
-                <el-table-column label="英文名" prop="EN"></el-table-column>
+                <el-table-column label="参数名" prop="chineseKey"></el-table-column>
+                <el-table-column label="英文名" prop="englishKey"></el-table-column>
                 <el-table-column label="值" prop="value"></el-table-column>
                 <el-table-column label="操作" >
                     <template slot-scope="scope">
                         <el-tooltip  effect="dark" content="编辑" placement="top" :enterable="false">
-                            <el-button type="primary" icon="el-icon-edit" size ='mini' @click="showEditDialog(scope.row.id)"></el-button>
+                            <el-button type="primary" icon="el-icon-edit" size ='mini' @click="showEditDialog(scope.row.lastEditorID)"></el-button>
                         </el-tooltip>
                         <el-tooltip  effect="dark" content="删除" placement="top" :enterable="false">
-                            <el-button type="danger" icon="el-icon-delete" size='mini' @click="removeUser"></el-button>
+                            <el-button type="danger" icon="el-icon-delete" size='mini' @click="removeUser(scope.row.lastEditorID)"></el-button>
                         </el-tooltip>
                     </template>
                 </el-table-column>
@@ -39,22 +39,40 @@
             layout="total, sizes, prev, pager, next, jumper" :total="total">
             </el-pagination>
         </el-card>
+        <!-- 修改参数-->
         <el-dialog title="修改参数" :visible.sync="editDialogVisble" width="50%" >
             <el-form :model="edituser" :rules="edituserRules" ref="edituserRef" label-width="70px">
                 <el-form-item label="参数名">
-                    <el-input v-model="edituser.name" ></el-input>
+                    <el-input v-model="edituser.chineseKey" ></el-input>
                 </el-form-item>
-                <el-form-item label="英文" prop='EN'>
-                    <el-input v-model="edituser.EN"></el-input>
+                <el-form-item label="英文" prop='englishKey'>
+                    <el-input v-model="edituser.englishKey"></el-input>
                 </el-form-item>
                 <el-form-item label="值" prop='value'>
                     <el-input v-model="edituser.value"></el-input>
                 </el-form-item>
             </el-form>
-            
             <span slot="footer" class="dialog-footer">
             <el-button @click="editDialogVisble = false">取 消</el-button>
-            <el-button type="primary" @click="editDialogVisble = false">确 定</el-button>
+            <el-button type="primary" @click="saveEdit()">确 定</el-button>
+            </span>
+        </el-dialog>
+        <!-- 添加参数 -->
+        <el-dialog title="修改参数" :visible.sync="addDialogVisble" width="50%" >
+            <el-form :model="addTable" :rules="edituserRules" ref="edituserRef" label-width="70px">
+                <el-form-item label="参数名">
+                    <el-input v-model="addTable.chineseKey" ></el-input>
+                </el-form-item>
+                <el-form-item label="英文" prop='englishKey'>
+                    <el-input v-model="addTable.englishKey"></el-input>
+                </el-form-item>
+                <el-form-item label="值" prop='value'>
+                    <el-input v-model="addTable.value"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+            <el-button @click="editDialogVisble = false">取 消</el-button>
+            <el-button type="primary" @click="saveAddTable()">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -69,16 +87,12 @@ export default({
                 pagenum:1,
                 pagesize:1
             },
-            tableData: [{
-          id:0,
-          date: '1',
-          name: '签到经验值',
-          EN:'signEXP',
-          tel: '123456',
-          value: 1
-        }],
+            tableData: [],
+            editTable:{},
+            addTable:{},
             total:0,
             editDialogVisble:false,
+            addDialogVisble:false,
             edituser:{},
             edituserRules:{
                 tel:[{required:true,message:'请输入课程号',trigger:'blur'},
@@ -87,8 +101,12 @@ export default({
             }
         }
     },
-    created() {
-        this.total=this.tableData.length;
+    async created() {
+        let res = await this.$http.get("/Sysparameter/selectAll");
+        console.log(res.data.obj);
+        this.tableData = res.data.obj;
+        for(let i=0;i<this.tableData.length;i++)this.tableData[i].lastEditorID=i;
+        this.total = this.tableData.length;
     },
     methods:{
         getlist(){
@@ -103,7 +121,7 @@ export default({
             console.log(newPage);
             this.getlist();
         },
-        async removeUser(){
+        async removeUser(index){
             const confirmResult = await  this.$confirm('此操作将永久删除该菜单, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -114,6 +132,7 @@ export default({
             return this.$message.info('已取消删除')
         }
         else{
+            this.delp(index)
             return this.$message({
             type: 'success',
             message: '删除成功!'
@@ -125,6 +144,26 @@ export default({
             console.log(this.edituser);
             this.editDialogVisble=true;
             
+        },
+        saveEdit(){
+            this.$http.post("/Sysparameter/updateSysParameterByKey",this.edituser);
+            console.log(this.edituser);
+            this.editDialogVisble = false;
+
+        },
+        addEditDialog(){
+            this.addDialogVisble=true;
+        },
+        saveAddTable(){
+             this.$http.post("/Sysparameter/insertSysParameter",this.addTable);
+             console.log(this.addTable);
+             this.addDialogVisble = false;
+             location.reload();
+        },
+        delp(index){
+            let id = this.tableData[index].sysParameterID;
+            this.$http.delete("/Sysparameter/deleteSysParameterById/"+id);
+            location.reload();
         }
     }
 })

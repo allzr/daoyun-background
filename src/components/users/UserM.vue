@@ -10,15 +10,15 @@
             <!-- 搜索 -->
             <el-row :gutter="20">
                 <el-col :span="6"> 
-                    <el-input placeholder="搜索">
+                    <el-input v-model="searchUser" placeholder="搜索">
                         <el-button slot="append" icon="el-icon-search"></el-button>
                     </el-input>
                 </el-col>
                 <el-col :span="4">
-                    <el-button class="adduser" type="primary">添加用户</el-button>
+                    <el-button class="adduser" type="primary" @click="showAdduserDialog">添加用户</el-button>
                 </el-col>
             </el-row>
-            <el-table :data="tableData  " border stripe>
+            <el-table :data="tableData" border stripe>
                 <el-table-column type="index"></el-table-column>
                 <el-table-column label="姓名" prop="name"></el-table-column>
                 <el-table-column label="角色类型" prop="role"></el-table-column>
@@ -48,8 +48,8 @@
                 </el-form-item>
                 <el-form-item label="身份" >
                     <el-select v-model="edituser.role">
-                    <el-option label="管理员" value="shanghai"></el-option>
-                    <el-option label="教师" value="beijing"></el-option>
+                    <el-option label="管理员" value="管理员"></el-option>
+                    <el-option label="教师" value="教师"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="电话" prop='tel'>
@@ -62,6 +62,29 @@
             <el-button type="primary" @click="editDialogVisble = false">确 定</el-button>
             </span>
         </el-dialog>
+        <!--添加用户表单 -->
+        <el-dialog title="修改用户" :visible.sync="adduserDialogVisble" width="50%" >
+            <el-form :model="addUser" :rules="edituserRules" ref="edituserRef" label-width="70px">
+                <el-form-item label="用户名">
+                    <el-input v-model="addUser.name" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="身份" >
+                    <el-select v-model="addUser.role">
+                    <el-option label="管理员" value="管理员"></el-option>
+                    <el-option label="教师" value="教师"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="电话" prop='tel'>
+                    <el-input v-model="addUser.tel"></el-input>
+                </el-form-item>
+            </el-form>
+            
+            <span slot="footer" class="dialog-footer">
+            <el-button @click="adduserDialogVisble= false">取 消</el-button>
+            <el-button type="primary" @click="adduserDialogVisble = false">确 定</el-button>
+            </span>
+        </el-dialog>
+
     </div>
 </template>
 <script>
@@ -106,7 +129,10 @@ export default({
                 tel:[{required:true,message:'请输入电话号码',trigger:'blur'},
                 {min: 11, max: 11, message: '请输入11位电话号码', trigger: 'blur'}
                 ]
-            }
+            },
+            addUser:{},
+            adduserDialogVisble:false,
+            searchUser:''
         }
     },
     created() {
@@ -147,6 +173,9 @@ export default({
             console.log(this.edituser);
             this.editDialogVisble=true;
             
+        },
+        showAdduserDialog(){
+            this.adduserDialogVisble=true;
         }
     }
 })

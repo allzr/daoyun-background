@@ -6,7 +6,8 @@ import {Message,Row,Col} from 'element-ui'
 import {Container,Header,Aside,Main,Menu,Submenu,MenuItemGroup,
         MenuItem,Breadcrumb,BreadcrumbItem,Card,Table,TableColumn,
         Popover,Tooltip,Pagination,MessageBox,Dialog,Select,Option
-        ,Checkbox,CheckboxGroup,Dropdown,DropdownItem,DropdownMenu} from 'element-ui'
+        ,Checkbox,CheckboxGroup,Dropdown,DropdownItem,DropdownMenu
+        ,Tabs,TabPane} from 'element-ui'
 Vue.use(Button)
 Vue.use(Form)
 Vue.use(FormItem)
@@ -37,5 +38,7 @@ Vue.use(CheckboxGroup)
 Vue.use(Dropdown)
 Vue.use(DropdownItem)
 Vue.use(DropdownMenu)
+Vue.use(Tabs)
+Vue.use(TabPane)
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

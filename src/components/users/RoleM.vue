@@ -10,7 +10,7 @@
             <!-- 搜索 -->
             <el-row :gutter="20">
                 <el-col :span="6"> 
-                    <el-input placeholder="搜索">
+                    <el-input v-model="searchRole" placeholder="搜索">
                         <el-button slot="append" icon="el-icon-search"></el-button>
                     </el-input>
                 </el-col>
@@ -106,7 +106,8 @@ export default({
             checkAll: false,
             checkedCities: ['上海', '广州'],
             cities: cityOptions,
-            isIndeterminate: true
+            isIndeterminate: true,
+            searchRole:''
         }
     },
     created() {

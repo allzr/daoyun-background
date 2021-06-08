@@ -13,7 +13,7 @@
   </span>
   <el-dropdown-menu slot="dropdown">
     <el-dropdown-item @click.native = "gotoChangePwd">修改密码</el-dropdown-item>
-    <el-dropdown-item @click.native = "gotoLogin">退出登入</el-dropdown-item>
+    <el-dropdown-item @click.native = "gotoLogin">退出登录</el-dropdown-item>
   </el-dropdown-menu>
 </el-dropdown>
       </i>
@@ -119,7 +119,8 @@ export default ({
       this.$router.push('/changePassword');
   },
   gotoLogin(){
-    this.$router.push('/Login');
+    window.sessionStorage.clear();
+    this.$router.push('/login');
   }
   }
 })

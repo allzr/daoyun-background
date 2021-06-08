@@ -12,7 +12,7 @@ import forgetPassword from '../components/forgetPassword.vue'
 import changePassword from '../components/changePassword.vue'
 Vue.use(VueRouter)
 
-export default  new VueRouter({
+const  Router=new VueRouter({
   routes : [
     {path:'/login', component: Login},
     {path:'/home',
@@ -31,5 +31,14 @@ export default  new VueRouter({
     {path:'/',redirect:'/login'},
  ]
 })
+
+Router.beforeEach((to,from,next)=>{
+  if(to.path==='/login')return next()
+  const tokenStr=window.sessionStorage.getItem('token');
+  if(tokenStr == null) return next('/login');
+  next();
+})
+
+export default Router
 
  
