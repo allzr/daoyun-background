@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Vue from 'vue'
 const http = axios.create({
-    baseURL: 'http://192.168.0.109:8081'
+    baseURL: 'http://47.98.165.155:8081'
 })
 //请求拦截
 http.interceptors.request.use(function (config) {

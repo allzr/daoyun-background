@@ -8,9 +8,6 @@
             <!--表单区域 -->
             <el-form :model="loginForm" ref="loginFormRef"  :rules="loginFormRules" label-width="30%" class="login_form">
                 <!--旧户名-->
-                <el-form-item prop="password" label="旧密码"> 
-                    <el-input v-model="loginForm.password" type="password"  prefix-icon="el-icon-lock"></el-input>
-                </el-form-item>
                 <!-- 新密码-->
                 <el-form-item prop="password" label="新密码"> 
                     <el-input v-model="loginForm.password" type="password"  prefix-icon="el-icon-lock"></el-input>
@@ -27,22 +24,24 @@ export default {
     data(){
         return{
             loginForm: {
-                username:'ouguojie',
-                password:'123456'
+                phoneNumber:'',
+                password:''
             },
             loginFormRules:{
-                username:[{ required: true, message: '请输入旧密码', trigger: 'blur' },{ min: 6, max: 15, message: '密码长度在 6 到 15 个字符', trigger: 'blur' }],
                 password:[{ required: true, message: '请输入新密码', trigger: 'blur' },{ min: 6, max: 15, message: '密码长度在 6 到 15 个字符', trigger: 'blur' }]
             }
         }
         
     },
     methods: {
-        login(){
+        async login(){
             this.$refs.loginFormRef.validate(valid=>{
                 //需后期导入数据库
                 if(!valid)return this.$message.error('修改失败');
-                this.$message.success('修改成功');
+                this.loginForm.password=this.$md5(this.loginForm.password);
+                this.loginForm.phoneNumber=window.sessionStorage.getItem('phonenum');
+                this.$http.post("/user/changePassword",this.loginForm); 
+                this.$message.success('修改成功,请重新登入');
                 this.$router.push("/");
             });
         }

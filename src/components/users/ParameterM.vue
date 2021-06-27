@@ -19,7 +19,7 @@
             <el-table :data="tableData  " border stripe>
                 <el-table-column type="index"></el-table-column>
                 <el-table-column label="参数名" prop="chineseKey"></el-table-column>
-                <el-table-column label="英文名" prop="englishKey"></el-table-column>
+                <el-table-column label="关键字" prop="englishKey"></el-table-column>
                 <el-table-column label="值" prop="value"></el-table-column>
                 <el-table-column label="操作" >
                     <template slot-scope="scope">
@@ -42,10 +42,10 @@
         <!-- 修改参数-->
         <el-dialog title="修改参数" :visible.sync="editDialogVisble" width="50%" >
             <el-form :model="edituser" :rules="edituserRules" ref="edituserRef" label-width="70px">
-                <el-form-item label="参数名">
+                <el-form-item label="参数名" prop='chineseKey'>
                     <el-input v-model="edituser.chineseKey" ></el-input>
                 </el-form-item>
-                <el-form-item label="英文" prop='englishKey'>
+                <el-form-item label="关键字" prop='englishKey'>
                     <el-input v-model="edituser.englishKey"></el-input>
                 </el-form-item>
                 <el-form-item label="值" prop='value'>
@@ -58,12 +58,12 @@
             </span>
         </el-dialog>
         <!-- 添加参数 -->
-        <el-dialog title="修改参数" :visible.sync="addDialogVisble" width="50%" >
-            <el-form :model="addTable" :rules="edituserRules" ref="edituserRef" label-width="70px">
-                <el-form-item label="参数名">
+        <el-dialog title="添加参数" :visible.sync="addDialogVisble" width="50%" >
+            <el-form :model="addTable" :rules="adduserRules" ref="adduserRules" label-width="70px">
+                <el-form-item label="参数名" prop='chineseKey'>
                     <el-input v-model="addTable.chineseKey" ></el-input>
                 </el-form-item>
-                <el-form-item label="英文" prop='englishKey'>
+                <el-form-item label="关键字" prop='englishKey'>
                     <el-input v-model="addTable.englishKey"></el-input>
                 </el-form-item>
                 <el-form-item label="值" prop='value'>
@@ -71,7 +71,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-            <el-button @click="editDialogVisble = false">取 消</el-button>
+            <el-button @click="addDialogVisble = false">取 消</el-button>
             <el-button type="primary" @click="saveAddTable()">确 定</el-button>
             </span>
         </el-dialog>
@@ -81,6 +81,22 @@
 
 export default({
     data()  {
+        var validateKeyword = (rule, value, callback) => {
+          for(let i=0;i<this.tableData.length;++i)  
+            {
+                if(value ==this.tableData[i].englishKey)
+          callback(new Error('关键字重复'));
+        }
+          callback();
+      };
+      var validateKeyword2 = (rule, value, callback) => {
+          for(let i=0;i<this.tableData.length;++i)  
+            {
+                if(value ==this.tableData[i].englishKey&&this.edituser.sysParameterID!=this.tableData[i].sysParameterID)
+          callback(new Error('关键字重复'));
+        }
+          callback();
+      };
         return{
             quertInof:{
                 query:'',
@@ -94,10 +110,16 @@ export default({
             editDialogVisble:false,
             addDialogVisble:false,
             edituser:{},
+            
             edituserRules:{
-                tel:[{required:true,message:'请输入课程号',trigger:'blur'},
-                {min: 6, max: 6, message: '请输入6位课程号', trigger: 'blur'}
-                ]
+                chineseKey:[{required:true,message:'请输入参数名',trigger:'blur'}],
+                englishKey:[{required:true,message:'请输入参数英文名',trigger:'blur'},{ validator: validateKeyword2, trigger: 'blur' }],
+                value:[{required:true,message:'请输入参数值',trigger:'blur'},{required: true,pattern: /^(0|[1-9][0-9]*)$/,message: '参数值为数字',trigger: 'blur'}]
+            },
+            adduserRules:{
+                chineseKey:[{required:true,message:'请输入参数名',trigger:'blur'}],
+                englishKey:[{required:true,message:'请输入参数英文名',trigger:'blur'},{ validator: validateKeyword, trigger: 'blur' }],
+                value:[{required:true,message:'请输入参数值',trigger:'blur'},{required: true,pattern: /^(0|[1-9][0-9]*)$/,message: '参数值为数字',trigger: 'blur'}]
             }
         }
     },
@@ -140,25 +162,33 @@ export default({
         }
         },
         showEditDialog(index){
-            this.edituser=this.tableData[index];
+            var objString = JSON.stringify(this.tableData[index]);
+            this.edituser=JSON.parse(objString);
             console.log(this.edituser);
             this.editDialogVisble=true;
             
         },
         saveEdit(){
+            this.$refs.edituserRef.validate(async valid=>{
+            if(!valid)return;
             this.$http.post("/Sysparameter/updateSysParameterByKey",this.edituser);
             console.log(this.edituser);
             this.editDialogVisble = false;
+            location.reload();
+            })
 
         },
         addEditDialog(){
             this.addDialogVisble=true;
         },
         saveAddTable(){
+            this.$refs.adduserRules.validate(async valid=>{
+            if(!valid)return;
              this.$http.post("/Sysparameter/insertSysParameter",this.addTable);
              console.log(this.addTable);
              this.addDialogVisble = false;
              location.reload();
+             })
         },
         delp(index){
             let id = this.tableData[index].sysParameterID;

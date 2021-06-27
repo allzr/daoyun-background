@@ -24,27 +24,27 @@
         <el-menu background-color="#333744" text-color="#fff"
       active-text-color="#409EFF"  :router="true" :default-active="activePath">
 
-       <el-menu-item :index="'/UserM'" @click="SaveNavState('/UserM')">
+       <el-menu-item :index="'/UserM'" @click="SaveNavState('/UserM')" :disabled="userM">
         <i class="el-icon-user-solid"></i>
         <span slot="title">用户管理</span>
       </el-menu-item>
-      <el-menu-item :index="'/ClassM'" @click="SaveNavState('/ClassM')">
+      <el-menu-item :index="'/ClassM'" @click="SaveNavState('/ClassM')" :disabled="classMM">
         <i class="el-icon-reading"></i>
         <span slot="title">课程管理</span>
       </el-menu-item>
-      <el-menu-item :index="'/RoleM'" @click="SaveNavState('/RoleM')">
+      <el-menu-item :index="'/RoleM'" @click="SaveNavState('/RoleM')" :disabled="roleM">
         <i class="el-icon-user"></i>
         <span slot="title">角色管理</span>
       </el-menu-item>
-      <el-menu-item :index="'/DictionaryM'" @click="SaveNavState('/DictionaryM')">
+      <el-menu-item :index="'/DictionaryM'" @click="SaveNavState('/DictionaryM')" :disabled="disM">
         <i class="el-icon-s-order"></i>
         <span slot="title">字典管理</span>
       </el-menu-item>
-      <el-menu-item :index="'/ParameterM'" @click="SaveNavState('/ParameterM')">
+      <el-menu-item :index="'/ParameterM'" @click="SaveNavState('/ParameterM')" :disabled="perM">
         <i class="el-icon-s-platform"></i>
         <span slot="title">系统参数</span>
       </el-menu-item>
-      <el-menu-item :index="'/MenuM'" @click="SaveNavState('/MenuM')">
+      <el-menu-item :index="'/MenuM'" @click="SaveNavState('/MenuM')" :disabled="menuM">
         <i class="el-icon-setting"></i>
         <span slot="title">菜单管理</span>
       </el-menu-item>
@@ -64,52 +64,50 @@
 export default ({
   data(){
     return{
-      activePath:''
+      userM:true,
+      classMM:true,
+      roleM:true,
+      disM:true,
+      perM:true,
+      menuM:true,
+      activePath:'',
     }
   },
-  created(){
+  async created(){
     this.activePath=window.sessionStorage.getItem('activePath');
-  //  请求拦截
-  //   axios.interceptors.request.use(	
-  //   config => {
-  //   	// 在发送请求之前做些什么
-  //       if (token) {// 每次发送请求之前判断是否存在token，如果存在，则统一在http请求的header都加上token，不用每次请求都手动添加了
-  //           config.headers.Authorization = `Bearer ${ token }`;
-  //       }
-  //       return config;
-  //   }, 
-  //   error => {
-  //   	// 对请求错误做些什么
-  //       router.push({path: "/NotFound"});
-  //       return Promise.reject(error);
-	// })
-  // 响应拦截
-  // axios.interceptors.response.use(
-  //   data => {
-  //   	// 对响应数据做点什么
-  //       return data;
-  //   },
-  //   error => {
-  //   	// 对响应错误做点什么
-  //       if (error.response) {
-  //           switch (error.response.status) {//401的时候，如果是公众号跳登录，企业号、app给提示
-  //               case 400:
-  //                   Message.error({
-  //                       message:"账号/密码错误",
-  //                       type:"error",
-  //                       duration:2000
-  //                   })
-  //               case 401://没有权限
-  //                   router.replace(
-  //                   	{path: "/Login",query: {redicet: router.currentRoute.fullPath} }
-  //                   );
-  //                   break;
-  //           }
-  //       } else {
-  //           router.push({path: "/NotFound"});
-  //       }
-  //       return Promise.reject(error);       
-	// })
+     let res = await this.$http.get("/userright/selectLoadingUserRight");
+      console.log(res.data.obj);
+      let roleSeting = res.data.obj;
+      if(roleSeting.userManage==true){
+        this.userM=false;
+        window.sessionStorage.setItem("userMR","true");
+        }
+      else window.sessionStorage.setItem("userMR","false");
+      if(roleSeting.courseManage==true){
+        this.classMM=false;
+        window.sessionStorage.setItem("classMR","true");
+        }
+      else window.sessionStorage.setItem("classMR","false");
+      if(roleSeting.dicManage==true){
+        this.disM=false;
+        window.sessionStorage.setItem("dicMM","true");
+        }
+      else window.sessionStorage.setItem("dicMM","false");
+      if(roleSeting.roleManage==true){
+        this.roleM=false;
+        window.sessionStorage.setItem("roleMM","true");
+        }
+      else window.sessionStorage.setItem("roleMM","false");
+      if(roleSeting.systemManage==true){
+        this.perM=false;
+        window.sessionStorage.setItem("perMM","true");
+        }
+      else window.sessionStorage.setItem("perMM","false");
+      if(roleSeting.manuManage==true){
+        this.menuM=false;
+        window.sessionStorage.setItem("menuMM","true");
+        }
+      else window.sessionStorage.setItem("menuMM","false");
   },
   methods:{
     SaveNavState(activePath){

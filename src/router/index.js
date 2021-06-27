@@ -36,6 +36,31 @@ Router.beforeEach((to,from,next)=>{
   if(to.path==='/login')return next()
   const tokenStr=window.sessionStorage.getItem('token');
   if(tokenStr == null) return next('/login');
+  if(to.path==='/UserM'){
+    const userMR=window.sessionStorage.getItem('userMR');
+    if(userMR==null||userMR!="true") return next('/home');
+
+  }
+  if(to.path==='/ClassM'){
+     const classMR=window.sessionStorage.getItem('classMR');
+     if(classMR==null||classMR!="true") return next('/home');
+   }
+   if(to.path==='/DictionaryM'){
+    const dicMM=window.sessionStorage.getItem('dicMM');
+    if(dicMM==null||dicMM!="true") return next('/home');
+  }
+  if(to.path==='/RoleM'){
+    const roleMM=window.sessionStorage.getItem('roleMM');
+    if(roleMM==null||roleMM!="true") return next('/home');
+  }
+  if(to.path==='/ParameterM'){
+    const perMM=window.sessionStorage.getItem('perMM');
+    if(perMM==null||perMM!="true") return next('/home');
+  }
+  if(to.path==='/MenuM'){
+    const menuMM=window.sessionStorage.getItem('menuMM');
+    if(menuMM==null||menuMM!="true") return next('/home');
+  }
   next();
 })
 

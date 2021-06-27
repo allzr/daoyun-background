@@ -13,7 +13,7 @@
                     <span>菜单管理</span>
                 </el-col>
                 <el-col :span="4">
-                    <el-button class="adduser" type="primary">添加菜单</el-button>
+                    <el-button class="adduser" type="primary" disabled>添加菜单</el-button>
                 </el-col>
             </el-row>
             <el-table :data="tableData  " border stripe>
@@ -22,11 +22,11 @@
                 <el-table-column label="url" prop="url"></el-table-column>
                 <el-table-column label="操作" >
                     <template slot-scope="scope">
-                        <el-tooltip  effect="dark" content="编辑" placement="top" :enterable="false">
-                            <el-button type="primary" icon="el-icon-edit" size ='mini' @click="showEditDialog(scope.row.id)"></el-button>
+                        <el-tooltip  effect="dark" content="编辑" placement="top" :enterable="false" >
+                            <el-button type="primary" icon="el-icon-edit" size ='mini' @click="showEditDialog(scope.row.id)" disabled></el-button>
                         </el-tooltip>
                         <el-tooltip  effect="dark" content="删除" placement="top" :enterable="false">
-                            <el-button type="danger" icon="el-icon-delete" size='mini' @click="removeUser"></el-button>
+                            <el-button type="danger" icon="el-icon-delete" size='mini' @click="removeUser" disabled></el-button>
                         </el-tooltip>
                     </template>
                 </el-table-column>
@@ -74,7 +74,7 @@ export default({
         }, {
           id:1,
           date: '2',
-          name: '权限管理',
+          name: '角色管理',
           tel: '123456',
           url:'/RoleM'
         }, {
@@ -89,7 +89,22 @@ export default({
           name: '参数管理',
           tel: '123456',
           url:'/ParameterM'
-        }],
+        },
+         {
+          id:4,
+          date: '5',
+          name: '课程管理',
+          tel: '123456',
+          url:'/ClassM'
+        },
+        {
+          id:5,
+          date: '6',
+          name: '菜单管理',
+          tel: '123456',
+          url:'/MenuM'
+        }
+        ],
             total:0,
             editDialogVisble:false,
             edituser:{},

@@ -54,7 +54,7 @@
                     </el-input>
                 </el-col>
                 <el-col :span="4">
-                    <el-button class="adduser" type="primary" @click="openNewSubDialog()">新增</el-button>
+                    <el-button class="adduser" type="primary" @click="openNewSubDialog()" :disabled=subTableVisble >新增</el-button>
                 </el-col>
             </el-row>
             <el-table :data="subtable" border stripe>
@@ -112,7 +112,7 @@
             </el-form>
             
             <span slot="footer" class="dialog-footer">
-            <el-button @click="editDialogVisble = false">取 消</el-button>
+            <el-button @click="editSubtable = false">取 消</el-button>
             <el-button type="primary" @click="SaveEditSub()">确 定</el-button>
             </span>
         </el-dialog>
@@ -165,9 +165,12 @@ export default({
             },
             tableData: [],
             total:0,
+            editTableIndex:0,
+            editSubtableIndex:0,
             editDialogVisble:false,
             editSubtable:false,
             addTableVisble:false,
+            subTableVisble:true,
             edituser:{},
             subtable:[],
             subtableA:{},
@@ -233,7 +236,8 @@ export default({
         },
         showEditDialog(index){
             console.log(index);
-            this.edituser=this.tableData[index];
+            var objString = JSON.stringify(this.tableData[index]);
+            this.edituser=JSON.parse(objString);
             this.editID=this.tableData[index].dataDicID;
             console.log(this.edituser);
             this.editDialogVisble=true;
@@ -251,6 +255,7 @@ export default({
             location.reload();
         },
         async showSubtable(index){
+            this.subTableVisble = false;
             let res2 ={};
             this.editID = this.tableData[index].dataDicID;
             let id = String(this.tableData[index].dataDicID);
@@ -262,12 +267,14 @@ export default({
         },
         //打开修改子表表格
         ShoweditSub(index){
-            this.subtableA=this.subtable[index];
+            var objString = JSON.stringify(this.subtable[index]);
+            this.subtableA=JSON.parse(objString);
             //console.log(this.subtable);
             this.editSubtable=true;
         },
         //保存修改子表
         SaveEditSub(){
+            if(this.subtableA.defaultValue!=0)this.subtableA.defaultValue=1;
             this.$http.post("/datadicdetail/updateDicDetail",this.subtableA)
             console.log(this.subtableA);
             this.editSubtable = false;

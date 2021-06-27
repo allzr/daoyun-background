@@ -107,13 +107,14 @@ export default {
                 //需后期导入数据库
                 if(!valid)return;
                 this.postForm.phoneNumber=this.loginForm.phoneNumber;
-                this.postForm.password=this.loginForm.password;
+                this.postForm.password=this.$md5(this.loginForm.password);
                 const {data:res} =await this.$http.post("/user/loginByPassword",this.postForm); 
                 console.log(res);
                 if(res.code==500){this.loginForm.password=''; return this.$message.error(res.message);}
                 this.$message.success(res.message);
                 //console.log(res);
                 window.sessionStorage.setItem('token',res.obj.token);
+                window.sessionStorage.setItem('phonenum',this.loginForm.phoneNumber);
                 this.$router.push("/home");
             });
         },
@@ -127,6 +128,7 @@ export default {
                 this.$message.success(res.message);
                 //console.log(res);
                 window.sessionStorage.setItem('token',res.obj.token);
+                window.sessionStorage.setItem('phonenum',this.loginForm.phoneNumber);
                 this.$router.push("/home");
             });
         },
